@@ -106,6 +106,9 @@ def run_net(args, config, train_writer=None, val_writer=None):
                 gt = data.cuda()
                 partial, _ = misc.seprate_point_cloud(gt, npoints, [int(npoints * 1/4) , int(npoints * 3/4)], fixed_points = None)
                 partial = partial.cuda()
+            elif dataset_name == 'ColoRadar':
+                partial = data[0].cuda()
+                gt = data[1].cuda()
             else:
                 raise NotImplementedError(f'Train phase do not support {dataset_name}')
 
@@ -191,7 +194,7 @@ def validate(base_model, test_dataloader, epoch, ChamferDisL1, ChamferDisL2, val
     n_samples = len(test_dataloader) # bs is 1
 
     interval =  n_samples // 10
-
+    dataset_name = None
     with torch.no_grad():
         for idx, (taxonomy_ids, model_ids, data) in enumerate(test_dataloader):
             taxonomy_id = taxonomy_ids[0] if isinstance(taxonomy_ids[0], str) else taxonomy_ids[0].item()
@@ -206,6 +209,9 @@ def validate(base_model, test_dataloader, epoch, ChamferDisL1, ChamferDisL2, val
                 gt = data.cuda()
                 partial, _ = misc.seprate_point_cloud(gt, npoints, [int(npoints * 1/4) , int(npoints * 3/4)], fixed_points = None)
                 partial = partial.cuda()
+            elif dataset_name == 'ColoRadar':
+                partial = data[0].cuda()
+                gt = data[1].cuda()
             else:
                 raise NotImplementedError(f'Train phase do not support {dataset_name}')
 
@@ -272,7 +278,10 @@ def validate(base_model, test_dataloader, epoch, ChamferDisL1, ChamferDisL2, val
             torch.cuda.synchronize()
      
     # Print testing results
-    shapenet_dict = json.load(open('./data/shapenet_synset_dict.json', 'r'))
+    if dataset_name == 'ColoRadar':
+        obj_dict = json.load(open('./data/coloradar_synset_dict.json', 'r'))
+    else:
+        obj_dict = json.load(open('./data/shapenet_synset_dict.json', 'r'))
     print_log('============================ TEST RESULTS ============================',logger=logger)
     msg = ''
     msg += 'Taxonomy\t'
@@ -288,7 +297,7 @@ def validate(base_model, test_dataloader, epoch, ChamferDisL1, ChamferDisL2, val
         msg += (str(category_metrics[taxonomy_id].count(0)) + '\t')
         for value in category_metrics[taxonomy_id].avg():
             msg += '%.3f \t' % value
-        msg += shapenet_dict[taxonomy_id] + '\t'
+        msg += obj_dict[taxonomy_id] + '\t'
         print_log(msg, logger=logger)
 
     msg = ''
@@ -350,7 +359,7 @@ def test(base_model, test_dataloader, ChamferDisL1, ChamferDisL2, args, config, 
 
             npoints = config.dataset.test._base_.N_POINTS
             dataset_name = config.dataset.test._base_.NAME
-            if dataset_name == 'PCN' or dataset_name == 'Projected_ShapeNet':
+            if dataset_name == 'PCN' or dataset_name == 'Projected_ShapeNet' or dataset_name == 'ColoRadar':
                 partial = data[0].cuda()
                 gt = data[1].cuda()
 
@@ -427,7 +436,10 @@ def test(base_model, test_dataloader, ChamferDisL1, ChamferDisL2, args, config, 
      
 
     # Print testing results
-    shapenet_dict = json.load(open('./data/shapenet_synset_dict.json', 'r'))
+    if dataset_name == 'ColoRadar':
+        obj_dict = json.load(open('./data/coloradar_synset_dict.json', 'r'))
+    else:
+        obj_dict = json.load(open('./data/shapenet_synset_dict.json', 'r'))
     print_log('============================ TEST RESULTS ============================',logger=logger)
     msg = ''
     msg += 'Taxonomy\t'
@@ -444,7 +456,7 @@ def test(base_model, test_dataloader, ChamferDisL1, ChamferDisL2, args, config, 
         msg += (str(category_metrics[taxonomy_id].count(0)) + '\t')
         for value in category_metrics[taxonomy_id].avg():
             msg += '%.3f \t' % value
-        msg += shapenet_dict[taxonomy_id] + '\t'
+        msg += obj_dict[taxonomy_id] + '\t'
         print_log(msg, logger=logger)
 
     msg = ''
