@@ -49,6 +49,52 @@ def get_args():
 
     return args
 
+def inference_single_ColoRadar(model, pc_path, args, config, root=None):
+    if root is not None:
+        pc_file = os.path.join(root, pc_path)
+    else:
+        pc_file = pc_path
+    # read single point cloud
+    pc_ndarray = IO.get(pc_file).astype(np.float32)
+    # transform it according to the model 
+    # In GT, 1st point is the seed/anchor point 
+    # In Input, 1st point is the closest point to the seed/anchor point
+    # Centering around seed/anchor point
+    
+    centroid = pc_ndarray[0]
+    pc_ndarray = pc_ndarray - centroid
+    m = np.max(np.sqrt(np.sum(pc_ndarray**2, axis=1)))
+    pc_ndarray = pc_ndarray / m
+
+    transform = Compose([{
+        'callback': 'ToTensor',
+        'objects': ['input']
+    }])
+    
+    pc_ndarray_normalized = transform({'input': pc_ndarray})
+    # inference
+    ret = model(pc_ndarray_normalized['input'].unsqueeze(0).to(args.device.lower()))
+    dense_points = ret[-1].squeeze(0).detach().cpu().numpy()
+
+    # denormalize it to adapt for the original input
+    dense_points = dense_points * m
+    dense_points = dense_points + centroid
+
+    if args.out_pc_root != '':
+        target_path = os.path.join(args.out_pc_root, os.path.splitext(pc_path)[0])
+        fine_pcd = o3d.geometry.PointCloud()
+        fine_pcd.points = o3d.utility.Vector3dVector(np.array(dense_points))
+        o3d.io.write_point_cloud(target_path+ '_fine.pcd', dense_pcd, True, True)
+        
+        if args.save_vis_img:
+            input_img = misc.get_ptcloud_img(pc_ndarray_normalized['input'].numpy())
+            dense_img = misc.get_ptcloud_img(dense_points)
+            cv2.imwrite(os.path.join(target_path, '_input.jpg'), input_img)
+            cv2.imwrite(os.path.join(target_path, '_fine.jpg'), dense_img)
+    
+    return
+
+
 def inference_single(model, pc_path, args, config, root=None):
     if root is not None:
         pc_file = os.path.join(root, pc_path)
@@ -112,9 +158,15 @@ def main():
     if args.pc_root != '':
         pc_file_list = os.listdir(args.pc_root)
         for pc_file in pc_file_list:
-            inference_single(base_model, pc_file, args, config, root=args.pc_root)
+            if config.dataset.train._base_['NAME'] == 'ColoRadar':
+                inference_single_ColoRadar(base_model, pc_file, args, config, root=args.pc_root)
+            else:
+                inference_single(base_model, pc_file, args, config, root=args.pc_root)
     else:
-        inference_single(base_model, args.pc, args, config)
+        if config.dataset.train._base_['NAME'] == 'ColoRadar':
+            inference_single_ColoRadar(base_model, args.pc, args, config)
+        else:
+            inference_single(base_model, args.pc, args, config)
 
 if __name__ == '__main__':
     main()
