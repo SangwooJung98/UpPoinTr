@@ -93,7 +93,7 @@ bash ./scripts/test.sh 0 \
     --ckpts ./pretrained/UpPoinTr.pth \
     --config ./cfgs/ColoRadar_models/UpPoinTr.yaml \
     --exp_name example
-
+```
 
 ### Training
 
