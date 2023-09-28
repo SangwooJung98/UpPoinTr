@@ -5,7 +5,7 @@
 We present ColoRadar Maps dataset, with the patches of the radar and the lidar maps generates for different scenes in the ColoRadar dataset. For each scene, the lidar scans are limited to radar FOV and 3D occupancy maps are generated using these scans. The radar maps are generated using the octomap package, but with a radar sensor model. These maps are used to generate patches of smaller regions, to effectively represent them in deep learning approaches. For each radar (input) patch, there exists a lidar(gt) patch, which has points  closest to the radar patch, but denoised, upsampled and complete pointcloud
 ![dataset](fig/dataset.png)
 
-You can download the dataset from:
+You can download the dataset from: ![Onedrive]()
 
 
 
@@ -30,5 +30,7 @@ The overall directory structure should be:
 ├──.......
 ```
 envName - arpg_lab/ aspen/ ec_hallways/ edgar_army/ edgar_classroom/ outdoors
-sceneID - run{id}, 
+sceneID - run{id}, run0 from each environment is considered as test data
+
+
 
