@@ -141,6 +141,13 @@ Code to support UpPoinTr model and ColoRadar dataset has been added to the origi
 ## Citation
 If you find our work useful in your research, please consider citing: 
 ```
+@article{mopidevi2023rmap,
+  title={RMap: Millimeter-Wave Radar Mapping Through Volumetric Upsampling},
+  author={Mopidevi, Ajay Narasimha and Harlow, Kyle and Heckman, Christoffer},
+  journal={arXiv preprint arXiv:2310.13188},
+  year={2023}
+}
+
 @inproceedings{yu2021pointr,
   title={PoinTr: Diverse Point Cloud Completion with Geometry-Aware Transformers},
   author={Yu, Xumin and Rao, Yongming and Wang, Ziyi and Liu, Zuyan and Lu, Jiwen and Zhou, Jie},
