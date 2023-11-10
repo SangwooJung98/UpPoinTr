@@ -7,6 +7,7 @@ UpPoinTr Architecture:
 
 ![intro](./UpPoinTr.png)
 
+
 ## Usage
 
 
@@ -68,7 +69,7 @@ ${UpPOINTR_CONFIG_FILE} ${UpPOINTR_CHECKPOINT_FILE} \
 For example, inference all samples under `demo/` and save the results under `inference_result/`
 ```
 python tools/inference.py \
-cfgs/PCN_models/AdaPoinTr.yaml ckpts/AdaPoinTr_PCN.pth \
+cfgs/ColoRadar_models/UpPoinTr.yaml ckpts/UpPoinTr.pth \
 --pc_root demo/ \ 
 --save_vis_img  \
 --out_pc_root inference_result/ \
