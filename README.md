@@ -7,6 +7,7 @@ UpPoinTr Architecture:
 
 ![intro](./UpPoinTr.png)
 
+
 ## Usage
 
 
@@ -53,6 +54,13 @@ bash install.sh
 
 The details of our new ***ColoRadar*** dataset can be found in [ColoRadarDATASET.md](./ColoRadarDATASET.md).
 
+### Pretrained Models
+| dataset  | url| performance |
+| --- | --- |  --- |
+| PCN | [OneDrive](https://o365coloradoedu-my.sharepoint.com/:u:/g/personal/ajmo2266_colorado_edu/EYXF84I88wBIq9XN2dKugloBMuE_XPJfZxY6crIBNN4hDw?e=JFoAiH) | F-Score 0.848 |
+| ColoRadar | --- | F-Score 0.441 | 
+
+
 ### Inference
 
 To inference sample(s) with pretrained model
@@ -68,7 +76,7 @@ ${UpPOINTR_CONFIG_FILE} ${UpPOINTR_CHECKPOINT_FILE} \
 For example, inference all samples under `demo/` and save the results under `inference_result/`
 ```
 python tools/inference.py \
-cfgs/PCN_models/AdaPoinTr.yaml ckpts/AdaPoinTr_PCN.pth \
+cfgs/ColoRadar_models/UpPoinTr.yaml ckpts/UpPoinTr.pth \
 --pc_root demo/ \ 
 --save_vis_img  \
 --out_pc_root inference_result/ \
@@ -141,6 +149,13 @@ Code to support UpPoinTr model and ColoRadar dataset has been added to the origi
 ## Citation
 If you find our work useful in your research, please consider citing: 
 ```
+@article{mopidevi2023rmap,
+  title={RMap: Millimeter-Wave Radar Mapping Through Volumetric Upsampling},
+  author={Mopidevi, Ajay Narasimha and Harlow, Kyle and Heckman, Christoffer},
+  journal={arXiv preprint arXiv:2310.13188},
+  year={2023}
+}
+
 @inproceedings{yu2021pointr,
   title={PoinTr: Diverse Point Cloud Completion with Geometry-Aware Transformers},
   author={Yu, Xumin and Rao, Yongming and Wang, Ziyi and Liu, Zuyan and Lu, Jiwen and Zhou, Jie},
