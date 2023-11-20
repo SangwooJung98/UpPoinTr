@@ -1072,7 +1072,7 @@ class UpPoinTr(nn.Module):
         for i in range(len(pcd)):
             num_pts *= self.up_factors[i]
             gt_partial = fps_subsample(gt, num_pts)
-            loss_intermediate += self.loss_func(pcd[i][:, :num_pts[i]].contiguous(), gt_partial)
+            loss_intermediate += self.loss_func(pcd[i][:, :num_pts].contiguous(), gt_partial)
         #coarse loss
         loss_coarse = self.loss_func(pred_coarse, gt)
         # recon loss
