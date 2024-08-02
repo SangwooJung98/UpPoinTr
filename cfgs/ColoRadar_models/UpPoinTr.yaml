@@ -63,7 +63,7 @@ model : {
     up_factors: [1, 4, 4]
 }
   
-total_bs : 1
+total_bs : 16
 step_per_update : 1
 max_epoch : 600
 
