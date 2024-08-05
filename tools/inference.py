@@ -7,6 +7,7 @@ import os
 import numpy as np
 import cv2
 import sys
+import open3d as o3d
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(BASE_DIR, '../'))
 
@@ -84,7 +85,7 @@ def inference_single_ColoRadar(model, pc_path, args, config, root=None):
         target_path = os.path.join(args.out_pc_root, os.path.splitext(pc_path)[0])
         fine_pcd = o3d.geometry.PointCloud()
         fine_pcd.points = o3d.utility.Vector3dVector(np.array(dense_points))
-        o3d.io.write_point_cloud(target_path+ '_fine.pcd', dense_pcd, True, True)
+        o3d.io.write_point_cloud(target_path+ '_fine.pcd', fine_pcd, True, True)
         
         if args.save_vis_img:
             input_img = misc.get_ptcloud_img(pc_ndarray_normalized['input'].numpy())
